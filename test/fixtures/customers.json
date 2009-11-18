@@ -1,0 +1,12 @@
+[{
+    "customer": {
+        "reference": "bradleyjoyce",
+        "updated_at": "2009-10-07T11:10:27-04:00",
+        "id": 16,
+        "organization": "Squeejee",
+        "first_name": "Bradley",
+        "last_name": "Joyce",
+        "email": "bradley@squeejee.com",
+        "created_at": "2009-10-07T11:10:27-04:00"
+    }
+}]

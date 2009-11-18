@@ -1,0 +1,17 @@
+{
+    "product": {
+        "price_in_cents": 500,
+        "name": "Monthly",
+        "handle": "monthly",
+        "id": 8,
+        "accounting_code": "TSMO",
+        "product_family": {
+            "name": "TweetSaver",
+            "handle": "tweetsaver",
+            "id": 7,
+            "accounting_code": null
+        },
+        "interval_unit": "month",
+        "interval": 1
+    }
+}

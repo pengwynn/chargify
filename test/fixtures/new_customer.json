@@ -1,0 +1,12 @@
+{
+    "customer": {
+        "created_at": "2009-11-18T10:56:22-05:00", 
+        "email": "wynn.netherland@gmail.com", 
+        "first_name": "Wynn", 
+        "id": 333, 
+        "last_name": "Netherland", 
+        "organization": null, 
+        "reference": null, 
+        "updated_at": "2009-11-18T10:56:22-05:00"
+    }
+}
