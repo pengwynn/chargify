@@ -1,15 +1,15 @@
-= chargify
+# chargify
 
 Ruby wrapper for the chargify.com SAAS and billing API
 
-== Installation
+## Installation
 
     sudo gem install gemcutter
     gem tumble
     sudo gem install chargify
     
 
-== Note on Patches/Pull Requests
+## Note on Patches/Pull Requests
  
 * Fork the project.
 * Make your feature addition or bug fix.
@@ -20,6 +20,6 @@ Ruby wrapper for the chargify.com SAAS and billing API
    bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
 
-== Copyright
+### Copyright
 
-Copyright (c) 2009 Wynn Netherland. See LICENSE for details.
+Copyright (c) 2009 [Wynn Netherland](http://wynnnetherland.com). See LICENSE for details.
