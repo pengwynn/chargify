@@ -1,8 +1,5 @@
 require 'rubygems'
 
-gem 'oauth', '~> 0.3.5'
-require 'oauth'
-
 gem 'hashie', '~> 0.1.3'
 require 'hashie'
 
