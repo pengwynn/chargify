@@ -1,7 +1,22 @@
 module Chargify
+  class UnexpectedResponseError < RuntimeError;end
+
+  def self.custom_parser
+    proc do |data|  
+      begin
+        Crack::JSON.parse(data)
+      rescue => e
+        error_msg = "Crack could not parse JSON. It said: #{e.message}. Chargify's raw response: #{data}"
+        raise UnexpectedResponseError, error_msg
+      end
+    end
+  end
+    
   class Client
     include HTTParty
     format :json
+    parser Chargify::custom_parser
+    headers 'Content-Type' => 'application/json' 
     
     attr_reader :api_key, :subdomain
     
@@ -33,8 +48,8 @@ module Chargify
     # * reference (Optional, but encouraged) The unique identifier used within your own application for this customer
     # 
     def create_customer(info={})
-      response = Hashie::Mash.new(self.class.post("/customers.json", :body => {:customer => info}))
-      return response.customer unless response.customer.blank?
+      response = Hashie::Mash.new(self.class.post("/customers.json", :body => {:customer => info}.to_json))
+      return response.customer if response.customer
       response
     end
     
@@ -49,7 +64,7 @@ module Chargify
       info.stringify_keys!
       chargify_id = info.delete('id')
       response = Hashie::Mash.new(self.class.put("/customers/#{chargify_id}.json", :body => {:customer => info}))
-      return response.customer unless response.customer.blank?
+      return response.customer unless response.customer.to_a.empty?
       response
     end
     
@@ -62,30 +77,33 @@ module Chargify
       Hashie::Mash.new(self.class.get("/subscriptions/#{subscription_id}.json")).subscription
     end
     
-    # When creating a subscription, you must specify a product, a customer, and payment (credit card) details.
-    # 
-    # The product may be specified by product_id or by product_handle (API Handle).
-    # 
-    # An existing customer may be specified by a customer_id (ID within Chargify) or a customer_reference (unique value within your app that you have shared with Chargify via the reference attribute on a customer). A new customer may be created by providing customer_attributes.
-    # 
-    #     * product_handle The API Handle of the product for which you are creating a subscription. Required, unless a product_id is given instead.
-    #     * product_id The Product ID of the product for which you are creating a subscription. The product ID is not currently published, so we recommend using the API Handle instead.
-    #     * customer_id The ID of an existing customer within Chargify. Required, unless a customer_reference or a set of customer_attributes is given.
-    #     * customer_reference The reference value (provided by your app) of an existing customer within Chargify. Required, unless a customer_id or a set of customer_attributes is given.
-    #     * customer_attributes
-    #           o first_name The first name of the customer. Required when creating a customer via attributes.
-    #           o last_name The last name of the customer. Required when creating a customer via attributes.
-    #           o email The email address of the customer. Required when creating a customer via attributes.
-    #           o organization The organization/company of the customer. Optional.
-    #           o reference A customer "reference", or unique identifier from your app, stored in Chargify. Can be used so that you may reference your customers within Chargify using the same unique value you use in your application. Optional.
-    # 
-    def create_subscription(options, customer_attributes={})
-      options.merge({:customer_attributes => customer_attributes}) unless customer_attributes.blank?
-      response = Hashie::Mash.new(self.class.post("/subscriptions.json", :body => options))
-      return response.subscription unless response.subscription.blank?
-      response
+    # Returns all elements outputted by Chargify plus:
+    # response.success? -> true if response code is 201, false otherwise
+    def create_subscription(subscription_attributes={})
+      raw_response = self.class.post("/subscriptions.json", :body => {:subscription => subscription_attributes}.to_json)
+      created  = true if raw_response.code == 201
+      response = Hashie::Mash.new(raw_response)
+      (response.subscription || response).update(:success? => created)
     end
-    
+
+    # Returns all elements outputted by Chargify plus:
+    # response.success? -> true if response code is 200, false otherwise
+    def update_subscription(sub_id, subscription_attributes = {})
+      raw_response = self.class.put("/subscriptions/#{sub_id}.json", :body => {:subscription => subscription_attributes}.to_json)
+      updated      = true if raw_response.code == 200
+      response     = Hashie::Mash.new(raw_response)
+      (response.subscription || response).update(:success? => updated)
+    end
+
+    # Returns all elements outputted by Chargify plus:
+    # response.success? -> true if response code is 200, false otherwise
+    def cancel_subscription(sub_id, message="")
+      raw_response = self.class.delete("/subscriptions/#{sub_id}.json", :body => {:subscription => {:cancellation_message => message} }.to_json)
+      deleted      = true if raw_response.code == 200
+      response     = Hashie::Mash.new(raw_response)
+      (response.subscription || response).update(:success? => deleted)
+    end
+
     def list_products
       products = self.class.get("/products.json")
       products.map{|p| Hashie::Mash.new p['product']}
@@ -98,7 +116,6 @@ module Chargify
     def product_by_handle(handle)
       Hashie::Mash.new(self.class.get("/products/handle/#{handle}.json")).product
     end
-    
     
   end
 end

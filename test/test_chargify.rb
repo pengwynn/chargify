@@ -5,6 +5,22 @@ class TestChargify < Test::Unit::TestCase
     setup do
       @client = Chargify::Client.new('OU812', 'pengwynn')
     end
+
+    should "raise UnexpectedResponseError when reponse is invalid JSON" do
+      stub_post "https://OU812:x@pengwynn.chargify.com/subscriptions.json", "invalid_subscription.json"
+      options = {
+        :product_handle     => 'monthly',
+        :customer_reference => 'bradleyjoyce',
+        :customer_attributes => {
+          :first_name   => "Wynn",
+          :last_name    => "Netherland",
+          :email        => "wynn@example.com"
+        }
+      }
+      assert_raise Chargify::UnexpectedResponseError do
+        @client.create_subscription(options)
+      end
+    end
     
     should "return a list of customers" do
       stub_get "https://OU812:x@pengwynn.chargify.com/customers.json", "customers.json"
@@ -44,7 +60,7 @@ class TestChargify < Test::Unit::TestCase
       customer = @client.update_customer(info)
       customer.first_name.should == "Wynn"
     end
-    
+
     should "return a list of customer subscriptions" do
       stub_get "https://OU812:x@pengwynn.chargify.com/customers/16/subscriptions.json", "subscriptions.json"
       subscriptions = @client.customer_subscriptions(16)
@@ -59,19 +75,115 @@ class TestChargify < Test::Unit::TestCase
       subscription.customer.reference.should == 'bradleyjoyce'
     end
     
+    should "update a customer subscription" do
+      stub_put "https://OU812:x@pengwynn.chargify.com/subscriptions/123.json", "subscription.json"
+      options = {
+        :product_handle     => 'monthly',
+        :customer_reference => 'bradleyjoyce',
+        :customer_attributes => {
+          :first_name   => "Wynn",
+          :last_name    => "Netherland",
+          :email        => "wynn@example.com"
+        }
+      }
+      subscription = @client.update_subscription(123, options)
+      subscription.customer.organization.should == 'Squeejee'
+    end
+
+    should "set success? to true when subscription is updated successfully" do
+      stub_put "https://OU812:x@pengwynn.chargify.com/subscriptions/123.json", "subscription.json", 200
+      options = {
+        :product_handle     => 'monthly',
+        :customer_reference => 'bradleyjoyce',
+        :customer_attributes => {
+          :first_name   => "Wynn",
+          :last_name    => "Netherland",
+          :email        => "wynn@example.com"
+        }
+      }
+      subscription = @client.update_subscription(123, options)
+      subscription.success?.should == true
+    end
+
+    should "set success? to false when subscription is not updated successfully" do
+      stub_put "https://OU812:x@pengwynn.chargify.com/subscriptions/123.json", "subscription.json", 500
+      options = {
+        :product_handle     => 'monthly',
+        :customer_reference => 'bradleyjoyce',
+        :customer_attributes => {
+          :first_name   => "Wynn",
+          :last_name    => "Netherland",
+          :email        => "wynn@example.com"
+        }
+      }
+      subscription = @client.update_subscription(123, options)
+      subscription.success?.should == nil
+    end
+    
     should "create a customer subscription" do
       stub_post "https://OU812:x@pengwynn.chargify.com/subscriptions.json", "subscription.json"
       options = {
         :product_handle     => 'monthly',
-        :customer_reference => 'bradleyjoyce'
+        :customer_reference => 'bradleyjoyce',
+        :customer_attributes => {
+          :first_name   => "Wynn",
+          :last_name    => "Netherland",
+          :email        => "wynn@example.com"
+        }
       }
-      customer_attributes = {
-        :first_name   => "Wynn",
-        :last_name    => "Netherland",
-        :email        => "wynn@example.com"
-      }
-      subscription = @client.create_subscription(options, customer_attributes)
+      subscription = @client.create_subscription(options)
       subscription.customer.organization.should == 'Squeejee'
+    end
+
+    should "set success? to true when subscription is created successfully" do 
+      stub_post "https://OU812:x@pengwynn.chargify.com/subscriptions.json", "subscription.json", 201
+      options = {
+        :product_handle     => 'monthly',
+        :customer_reference => 'bradleyjoyce',
+        :customer_attributes => {
+          :first_name   => "Wynn",
+          :last_name    => "Netherland",
+          :email        => "wynn@example.com"
+        }
+      }
+      subscription = @client.create_subscription(options)
+      subscription.success?.should == true
+    end
+
+    should "set success? to nil when subscription is not created successfully" do 
+      stub_post "https://OU812:x@pengwynn.chargify.com/subscriptions.json", "subscription.json", 400
+      options = {
+        :product_handle     => 'monthly',
+        :customer_reference => 'bradleyjoyce',
+        :customer_attributes => {
+          :first_name   => "Wynn",
+          :last_name    => "Netherland",
+          :email        => "wynn@example.com"
+        }
+      }
+      subscription = @client.create_subscription(options)
+      subscription.success?.should == nil
+    end
+
+    should "cancel subscription" do
+      stub_delete "https://OU812:x@pengwynn.chargify.com/subscriptions/123.json", "deleted_subscription.json", 200
+      subscription = @client.cancel_subscription(123)
+
+      subscription.state.should == "canceled"
+    end
+
+    should "set success? to nil when subscription is not cancelled successfully" do
+      stub_delete "https://OU812:x@pengwynn.chargify.com/subscriptions/123.json", "deleted_subscription.json", 500
+      subscription = @client.cancel_subscription(123)
+
+      subscription.success?.should == nil
+    end
+
+    should "set success? to true when subscription is cancelled successfully" do
+      stub_delete "https://OU812:x@pengwynn.chargify.com/subscriptions/123.json", "deleted_subscription.json", 200
+      subscription = @client.cancel_subscription(123)
+
+      subscription.success?.should == true
     end
     
     should "return a list of products" do
