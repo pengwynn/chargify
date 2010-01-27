@@ -9,7 +9,7 @@ begin
     gem.description = %Q{Ruby wrapper for the chargify.com SAAS and billing API}
     gem.email = "wynn.netherland@gmail.com"
     gem.homepage = "http://github.com/pengwynn/chargify"
-    gem.authors = ["Wynn Netherland"]
+    gem.authors = ["Wynn Netherland","Nash Kabbara"]
     
     gem.add_dependency('hashie', '~> 0.1.3')
     gem.add_dependency('httparty', '~> 0.4.5')
