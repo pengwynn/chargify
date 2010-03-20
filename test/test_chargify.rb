@@ -74,6 +74,12 @@ class TestChargify < Test::Unit::TestCase
       subscription = @client.subscription(13)
       subscription.customer.reference.should == 'bradleyjoyce'
     end
+
+    should "return nil if a subscription is not found" do
+      stub_get "https://OU812:x@pengwynn.chargify.com/subscriptions/18.json", "subscription_not_found.json", 404
+      subscription = @client.subscription(18)
+      subscription.should == nil
+    end
     
     should "update a customer subscription" do
       stub_put "https://OU812:x@pengwynn.chargify.com/subscriptions/123.json", "subscription.json"

@@ -74,7 +74,9 @@ module Chargify
     end
     
     def subscription(subscription_id)
-      Hashie::Mash.new(self.class.get("/subscriptions/#{subscription_id}.json")).subscription
+      raw_response = self.class.get("/subscriptions/#{subscription_id}.json")
+      return nil if raw_response.code != 200
+      Hashie::Mash.new(raw_response).subscription
     end
     
     # Returns all elements outputted by Chargify plus:
