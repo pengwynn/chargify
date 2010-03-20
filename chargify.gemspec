@@ -35,6 +35,7 @@ Gem::Specification.new do |s|
      "test/fixtures/product.json",
      "test/fixtures/products.json",
      "test/fixtures/subscription.json",
+     "test/fixtures/subscription_not_found.json",
      "test/fixtures/subscriptions.json",
      "test/helper.rb",
      "test/test_chargify.rb"
@@ -42,7 +43,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/pengwynn/chargify}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Ruby wrapper for the chargify.com SAAS and billing API}
   s.test_files = [
     "test/helper.rb",
