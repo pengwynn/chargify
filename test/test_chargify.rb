@@ -50,7 +50,7 @@ class TestChargify < Test::Unit::TestCase
     end
     
     should "update a customer" do
-      stub_put "https://OU812:x@pengwynn.chargify.com/customers/16.json", "new_customer.json"
+      stub_put "https://OU812:x@pengwynn.chargify.com/customers/lookup.json?reference=16", "new_customer.json"
       info = {
         :id           => 16,
         :first_name   => "Wynn",
@@ -59,6 +59,14 @@ class TestChargify < Test::Unit::TestCase
       }
       customer = @client.update_customer(info)
       customer.first_name.should == "Wynn"
+    end
+    
+    should_eventually "raise an exception if a customer is not found" do
+      
+    end
+    
+    should_eventually "delete a customer" do
+      
     end
 
     should "return a list of customer subscriptions" do
@@ -192,6 +200,26 @@ class TestChargify < Test::Unit::TestCase
       subscription.success?.should == true
     end
     
+    should_eventually "create a one-off charge for a subscription" do
+      
+    end
+    
+    should_eventually "list metered usage for a subscription" do
+      
+    end
+    
+    should_eventually "record metered usage for a subscription" do
+      
+    end
+    
+    should_eventually "migrate a subscription to a new product" do
+      
+    end
+    
+    should_eventually "create one-time coupons" do
+      
+    end
+    
     should "return a list of products" do
       stub_get "https://OU812:x@pengwynn.chargify.com/products.json", "products.json"
       products = @client.list_products
@@ -209,6 +237,7 @@ class TestChargify < Test::Unit::TestCase
       product = @client.product_by_handle('tweetsaver')
       product.accounting_code.should == 'TSMO'
     end
+
     
   end
 end
