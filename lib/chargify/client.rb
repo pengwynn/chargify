@@ -37,7 +37,7 @@ module Chargify
     end
     
     def customer(chargify_id)
-      Hashie::Mash.new(self.class.get("/customers/#{chargify_id}.json")).customer
+      Hashie::Mash.new(self.class.get("/customers/lookup.json?reference=#{chargify_id}")).customer
     end
     
     #

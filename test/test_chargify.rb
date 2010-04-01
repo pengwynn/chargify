@@ -32,7 +32,7 @@ class TestChargify < Test::Unit::TestCase
     
     
     should "return info for a customer" do
-      stub_get "https://OU812:x@pengwynn.chargify.com/customers/16.json", "customer.json"
+      stub_get "https://OU812:x@pengwynn.chargify.com/customers/lookup.json?reference=16", "customer.json"
       customer = @client.customer(16)
       customer.reference.should == 'bradleyjoyce'
       customer.organization.should == 'Squeejee'
@@ -50,7 +50,7 @@ class TestChargify < Test::Unit::TestCase
     end
     
     should "update a customer" do
-      stub_put "https://OU812:x@pengwynn.chargify.com/customers/lookup.json?reference=16", "new_customer.json"
+      stub_put "https://OU812:x@pengwynn.chargify.com/customers/16.json", "new_customer.json"
       info = {
         :id           => 16,
         :first_name   => "Wynn",
