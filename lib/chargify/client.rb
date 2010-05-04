@@ -1,21 +1,21 @@
 module Chargify
-  class UnexpectedResponseError < RuntimeError;end
-
-  def self.custom_parser
-    proc do |data|  
+  class UnexpectedResponseError < RuntimeError
+  end
+  
+  class Parser < HTTParty::Parser
+    def parse
       begin
-        Crack::JSON.parse(data)
+        Crack::JSON.parse(body)
       rescue => e
-        error_msg = "Crack could not parse JSON. It said: #{e.message}. Chargify's raw response: #{data}"
-        raise UnexpectedResponseError, error_msg
+        raise UnexpectedResponseError, "Crack could not parse JSON. It said: #{e.message}. Chargify's raw response: #{body}"
       end
     end
   end
-    
+  
   class Client
     include HTTParty
-    format :json
-    parser Chargify::custom_parser
+    
+    parser Chargify::Parser
     headers 'Content-Type' => 'application/json' 
     
     attr_reader :api_key, :subdomain
