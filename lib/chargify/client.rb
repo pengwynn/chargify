@@ -106,6 +106,17 @@ module Chargify
       (response.subscription || response).update(:success? => deleted)
     end
 
+    def charge_subscription(sub_id, subscription_attributes={})
+      raw_response = self.class.post("/subscriptions/#{sub_id}/charges.json", :body => { :charge => subscription_attributes })
+      success      = raw_response.code == 201
+      if raw_response.code == 404
+        raw_response = {}
+      end
+
+      response = Hashie::Mash.new(raw_response)
+      (response.charge || response).update(:success? => success)
+    end
+
     def list_products
       products = self.class.get("/products.json")
       products.map{|p| Hashie::Mash.new p['product']}

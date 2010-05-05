@@ -1,0 +1,5 @@
+{"charge":{
+  "success":true,
+  "memo":"This is the description of the one time charge.",
+  "amount_in_cents":100
+}}

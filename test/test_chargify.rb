@@ -200,8 +200,41 @@ class TestChargify < Test::Unit::TestCase
       subscription.success?.should == true
     end
     
-    should_eventually "create a one-off charge for a subscription" do
-      
+    context "when creating a one-off charge for a subscription" do
+      setup do
+        stub_post "https://OU812:x@pengwynn.chargify.com/subscriptions/123/charges.json", "charge_subscription.json", 201
+        @options = {
+          :meno   => "This is the description of the one time charge.",
+          :amount => 1.00,
+          :amount_in_cents => 100
+        }
+      end
+
+      should "accept :amount as a parameter" do
+        subscription = @client.charge_subscription(123, @options)
+        subscription.amount_in_cents.should == @options[:amount]*100
+        subscription.success?.should == true
+      end
+
+      should "accept :amount_in_cents as a parameter" do
+        subscription = @client.charge_subscription(123, @options)
+        subscription.amount_in_cents.should == @options[:amount_in_cents]
+        subscription.success?.should == true
+      end
+
+      should "return an error if parameters are missing" do
+        stub_post "https://OU812:x@pengwynn.chargify.com/subscriptions/123/charges.json", "charge_subscription_missing_parameters.json", 422
+
+        subscription = @client.charge_subscription(123, {})
+        subscription.success?.should == false
+      end
+
+      should "raise a '404 Not Found' error when the subscription is not found" do
+        stub_post "https://OU812:x@pengwynn.chargify.com/subscriptions/9999/charges.json", "", 404
+
+        subscription = @client.charge_subscription(9999, @options)
+        subscription.success?.should == false
+      end
     end
     
     should_eventually "list metered usage for a subscription" do
@@ -237,7 +270,7 @@ class TestChargify < Test::Unit::TestCase
       product = @client.product_by_handle('tweetsaver')
       product.accounting_code.should == 'TSMO'
     end
-
+    
     
   end
 end
