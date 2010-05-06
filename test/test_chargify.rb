@@ -240,12 +240,14 @@ class TestChargify < Test::Unit::TestCase
 
       should "accept :amount as a parameter" do
         subscription = @client.charge_subscription(123, @options)
+        
         subscription.amount_in_cents.should == @options[:amount]*100
         subscription.success?.should == true
       end
 
       should "accept :amount_in_cents as a parameter" do
         subscription = @client.charge_subscription(123, @options)
+        
         subscription.amount_in_cents.should == @options[:amount_in_cents]
         subscription.success?.should == true
       end
@@ -258,12 +260,10 @@ class TestChargify < Test::Unit::TestCase
       end
 
       should "have success? as false if the subscription is not found" do
-# TODO:      should "raise an exception if the subscription is not found" do
         stub_post "https://OU812:x@pengwynn.chargify.com/subscriptions/9999/charges.json", "", 404
-#        assert_raise Chargify::UnexpectedResponseError do
-          subscription = @client.charge_subscription(9999, @options)
-          subscription.success?.should == false
-#        end
+        
+        subscription = @client.charge_subscription(9999, @options)
+        subscription.success?.should == false
       end
     end
     
@@ -280,8 +280,12 @@ class TestChargify < Test::Unit::TestCase
       end
     end
     
-    should_eventually "migrate a subscription to a new product" do
+    should "migrate a subscription from one product to another" do
+      stub_post "https://OU812:x@pengwynn.chargify.com/subscriptions/123/migrations.json", "migrate_subscription.json"
       
+      subscription = @client.migrate_subscription(123, 354);
+      subscription.success?.should == true
+      subscription.product.id.should == 354
     end
     
     # should_eventually "create one-time coupons" do
