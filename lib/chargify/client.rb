@@ -36,9 +36,22 @@ module Chargify
       customers.map{|c| Hashie::Mash.new c['customer']}
     end
     
-    def customer(chargify_id)
-      Hashie::Mash.new(self.class.get("/customers/lookup.json?reference=#{chargify_id}")).customer
+    def customer_by_id(chargify_id)
+      request = self.class.get("/customers/#{chargify_id}.json")
+      success = request.code == 200
+      response = Hashie::Mash.new(request).customer if success
+      Hashie::Mash.new(response || {}).update(:success? => success)
     end
+    
+    def customer_by_reference(reference_id)
+      request = self.class.get("/customers/lookup.json?reference=#{reference_id}")
+      success = request.code == 200
+      response = Hashie::Mash.new(request).customer if success
+      Hashie::Mash.new(response || {}).update(:success? => success)
+    end
+    
+    alias customer customer_by_reference
+    
     
     #
     # * first_name (Required)
@@ -128,6 +141,13 @@ module Chargify
     
     def product_by_handle(handle)
       Hashie::Mash.new(self.class.get("/products/handle/#{handle}.json")).product
+    end
+    
+    def list_subscription_usage(subscription_id, component_id)
+      raw_response = self.class.get("/subscriptions/#{subscription_id}/components/#{component_id}/usages.json")
+      success      = raw_response.code == 200
+      response     = Hashie::Mash.new(raw_response)
+      response.update(:success? => success)
     end
     
   end
