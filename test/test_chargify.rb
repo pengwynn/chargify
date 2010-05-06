@@ -57,13 +57,10 @@ class TestChargify < Test::Unit::TestCase
       customer.first_name.should == "Wynn"
     end
     
-    should_eventually "raise an exception if a customer is not found" do
-      
-    end
-    
-    should_eventually "delete a customer" do
-      
-    end
+    # Depends on Chargify:
+    # should_eventually "delete a customer" do
+    #   
+    # end
 
     should "raise UnexpectedResponseError when reponse is invalid JSON" do
       stub_post "https://OU812:x@pengwynn.chargify.com/subscriptions.json", "invalid_subscription.json"
@@ -287,10 +284,6 @@ class TestChargify < Test::Unit::TestCase
       subscription.success?.should == true
       subscription.product.id.should == 354
     end
-    
-    # should_eventually "create one-time coupons" do
-    #   see the test for creating a subscription with a one-time coupon
-    # end
     
     should "return a list of products" do
       stub_get "https://OU812:x@pengwynn.chargify.com/products.json", "products.json"
