@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{chargify}
-  s.version = "0.2.1"
+  s.version = "0.2.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Wynn Netherland", "Nash Kabbara"]
-  s.date = %q{2010-03-19}
+  s.date = %q{2010-05-11}
   s.description = %q{Ruby wrapper for the chargify.com SAAS and billing API}
   s.email = %q{wynn.netherland@gmail.com}
   s.extra_rdoc_files = [
