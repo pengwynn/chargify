@@ -8,6 +8,14 @@ Ruby wrapper for the chargify.com SAAS and billing API
     gem tumble
     sudo gem install chargify
     
+## Example Usage
+
+### Create, cancel, then reactivate subscription
+    attributes   = { :product_handle => 'basic' ... }
+    @client      = Chargify::Client.new('InDhcXAAAAAg7juDD', 'xxx-test')
+    subscription = @client.create_subscription(attributes)
+    @client.cancel_subscription(subscription[:id], "Canceled due to bad customer service.") 
+    @client.reactivate_subscription(subscription[:id]) #Made him an offer he couldn't refuse!
 
 ## Note on Patches/Pull Requests
  

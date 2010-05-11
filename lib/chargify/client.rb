@@ -106,6 +106,13 @@ module Chargify
       (response.subscription || response).update(:success? => deleted)
     end
 
+    def reactivate_subscription(sub_id)
+      raw_response = self.class.put("/subscriptions/#{sub_id}/reactivate.json", :body => "")
+      reactivated  = true if raw_response.code == 200
+      response     = Hashie::Mash.new(raw_response) rescue Hashie::Mash.new
+      (response.subscription || response).update(:success? => reactivated)
+    end
+
     def list_products
       products = self.class.get("/products.json")
       products.map{|p| Hashie::Mash.new p['product']}
