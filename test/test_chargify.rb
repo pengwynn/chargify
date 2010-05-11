@@ -179,6 +179,27 @@ class TestChargify < Test::Unit::TestCase
       subscription.success?.should == nil
     end
 
+    should "reactivate a subscription" do
+      stub_put "https://OU812:x@pengwynn.chargify.com/subscriptions/123/reactivate.json", "subscription.json", 200
+      subscription = @client.reactivate_subscription(123)
+
+      subscription.state.should == "active"
+    end
+
+    should "set success? to nil when subscription is not reactivated successfully" do
+      stub_put "https://OU812:x@pengwynn.chargify.com/subscriptions/123/reactivate.json", "subscription_not_found.json", 500
+      subscription = @client.reactivate_subscription(123)
+
+      subscription.success?.should == nil
+    end
+
+    should "set success? to false when subscription is reactivated successfully" do
+      stub_put "https://OU812:x@pengwynn.chargify.com/subscriptions/123/reactivate.json", "subscription.json", 200
+      subscription = @client.reactivate_subscription(123)
+
+      subscription.success?.should == true
+    end
+
     should "cancel subscription" do
       stub_delete "https://OU812:x@pengwynn.chargify.com/subscriptions/123.json", "deleted_subscription.json", 200
       subscription = @client.cancel_subscription(123)
