@@ -38,7 +38,7 @@ Gem::Specification.new do |s|
      "test/fixtures/subscription_not_found.json",
      "test/fixtures/subscriptions.json",
      "test/helper.rb",
-     "test/test_chargify.rb"
+     "test/chargify_test.rb"
   ]
   s.homepage = %q{http://github.com/pengwynn/chargify}
   s.rdoc_options = ["--charset=UTF-8"]
@@ -47,7 +47,7 @@ Gem::Specification.new do |s|
   s.summary = %q{Ruby wrapper for the chargify.com SAAS and billing API}
   s.test_files = [
     "test/helper.rb",
-     "test/test_chargify.rb"
+     "test/chargify_test.rb"
   ]
 
   if s.respond_to? :specification_version then
