@@ -1,4 +1,5 @@
 require "mg"
+require 'active_support/inflector'
 require 'shoulda/tasks'
 
 
