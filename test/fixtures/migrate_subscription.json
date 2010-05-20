@@ -1,0 +1,51 @@
+{
+    "subscription": {
+        "id": 123,
+        "state": "active",
+        "balance_in_cents": "auto generated",
+        "current_period_started_at": "auto generated",
+        "current_period_ends_at": "auto generated",
+        "activated_at": "auto generated",
+        "trial_ended_at": "auto generated",
+        "trial_started_at": "auto generated",
+        "expires_at": "auto generated",
+        "created_at": "auto generated",
+        "updated_at": "auto generated",
+        "cancellation_message": null,
+        "customer": {
+            "id": "auto generated",
+            "first_name": "your value",
+            "last_name": "your value",
+            "email": "your value",
+            "organization": "your value",
+            "reference": "your value",
+            "updated_at": "auto generated",
+            "created_at": "auto generated"
+        },
+        "product": {
+            "id": 354,
+            "name": "[@products.last.name]",
+            "handle": 354,
+            "price_in_cents": 1000,
+            "accounting_code": "[@products.last.accounting_code]",
+            "description": "your value",
+            "interval": 3600,
+            "interval_unit": "[@products.last.interval_unit]",
+            "product_family": {
+                "id": 15,
+                "name": "[@products.last.product_family.name]",
+                "handle": "[@products.last.product_family.handle]",
+                "accounting_code": "[@products.last.product_family.accounting_code]",
+                "description": "your value"
+            }
+        },
+        "credit_card": {
+            "first_name": "your value",
+            "last_name": "your value",
+            "masked_card_number": "your value",
+            "card_type": "auto generated",
+            "expiration_month": "your value",
+            "expiration_year": "your value"
+        }
+    }
+}

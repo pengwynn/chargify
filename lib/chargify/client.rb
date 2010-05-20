@@ -1,21 +1,21 @@
 module Chargify
-  class UnexpectedResponseError < RuntimeError;end
-
-  def self.custom_parser
-    proc do |data|  
+  class UnexpectedResponseError < RuntimeError
+  end
+  
+  class Parser < HTTParty::Parser
+    def parse
       begin
-        Crack::JSON.parse(data)
+        Crack::JSON.parse(body)
       rescue => e
-        error_msg = "Crack could not parse JSON. It said: #{e.message}. Chargify's raw response: #{data}"
-        raise UnexpectedResponseError, error_msg
+        raise UnexpectedResponseError, "Crack could not parse JSON. It said: #{e.message}. Chargify's raw response: #{body}"
       end
     end
   end
-    
+  
   class Client
     include HTTParty
-    format :json
-    parser Chargify::custom_parser
+    
+    parser Chargify::Parser
     headers 'Content-Type' => 'application/json' 
     
     attr_reader :api_key, :subdomain
@@ -36,9 +36,22 @@ module Chargify
       customers.map{|c| Hashie::Mash.new c['customer']}
     end
     
-    def customer(chargify_id)
-      Hashie::Mash.new(self.class.get("/customers/lookup.json?reference=#{chargify_id}")).customer
+    def customer_by_id(chargify_id)
+      request = self.class.get("/customers/#{chargify_id}.json")
+      success = request.code == 200
+      response = Hashie::Mash.new(request).customer if success
+      Hashie::Mash.new(response || {}).update(:success? => success)
     end
+    
+    def customer_by_reference(reference_id)
+      request = self.class.get("/customers/lookup.json?reference=#{reference_id}")
+      success = request.code == 200
+      response = Hashie::Mash.new(request).customer if success
+      Hashie::Mash.new(response || {}).update(:success? => success)
+    end
+    
+    alias customer customer_by_reference
+    
     
     #
     # * first_name (Required)
@@ -72,6 +85,8 @@ module Chargify
       subscriptions = self.class.get("/customers/#{chargify_id}/subscriptions.json")
       subscriptions.map{|s| Hashie::Mash.new s['subscription']}
     end
+    
+    
     
     def subscription(subscription_id)
       raw_response = self.class.get("/subscriptions/#{subscription_id}.json")
@@ -112,6 +127,24 @@ module Chargify
       response     = Hashie::Mash.new(raw_response) rescue Hashie::Mash.new
       (response.subscription || response).update(:success? => reactivated)
     end
+      
+    def charge_subscription(sub_id, subscription_attributes={})
+      raw_response = self.class.post("/subscriptions/#{sub_id}/charges.json", :body => { :charge => subscription_attributes })
+      success      = raw_response.code == 201
+      if raw_response.code == 404
+        raw_response = {}
+      end
+
+      response = Hashie::Mash.new(raw_response)
+      (response.charge || response).update(:success? => success)
+    end
+    
+    def migrate_subscription(sub_id, product_id)
+      raw_response = self.class.post("/subscriptions/#{sub_id}/migrations.json", :body => {:product_id => product_id }.to_json)
+      success      = true if raw_response.code == 200
+      response     = Hashie::Mash.new(raw_response)
+      (response.subscription || {}).update(:success? => success)
+    end
 
     def list_products
       products = self.class.get("/products.json")
@@ -124,6 +157,13 @@ module Chargify
     
     def product_by_handle(handle)
       Hashie::Mash.new(self.class.get("/products/handle/#{handle}.json")).product
+    end
+    
+    def list_subscription_usage(subscription_id, component_id)
+      raw_response = self.class.get("/subscriptions/#{subscription_id}/components/#{component_id}/usages.json")
+      success      = raw_response.code == 200
+      response     = Hashie::Mash.new(raw_response)
+      response.update(:success? => success)
     end
     
   end
