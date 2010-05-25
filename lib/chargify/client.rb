@@ -129,7 +129,7 @@ module Chargify
     end
       
     def charge_subscription(sub_id, subscription_attributes={})
-      raw_response = self.class.post("/subscriptions/#{sub_id}/charges.json", :body => { :charge => subscription_attributes })
+      raw_response = self.class.post("/subscriptions/#{sub_id}/charges.json", :body => { :charge => subscription_attributes }.to_json)
       success      = raw_response.code == 201
       if raw_response.code == 404
         raw_response = {}

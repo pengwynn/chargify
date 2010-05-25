@@ -250,7 +250,7 @@ class ChargifyTest < Test::Unit::TestCase
       setup do
         stub_post "https://OU812:x@pengwynn.chargify.com/subscriptions/123/charges.json", "charge_subscription.json", 201
         @options = {
-          :meno   => "This is the description of the one time charge.",
+          :memo   => "This is the description of the one time charge.",
           :amount => 1.00,
           :amount_in_cents => 100
         }
