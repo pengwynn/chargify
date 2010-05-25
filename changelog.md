@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.5 May 24, 2010
+* Require fix from [@will](http://github.com/will)
 
 ## 0.2.4 May 20, 2010
 
