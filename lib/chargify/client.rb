@@ -166,5 +166,14 @@ module Chargify
       response.update(:success? => success)
     end
     
+    def subscription_transactions(sub_id, options={})
+      transactions = self.class.get("/subscriptions/#{sub_id}/transactions.json", :query => options)
+      transactions.map{|t| Hashie::Mash.new t['transaction']}
+    end
+
+    def site_transactions(options={})
+      transactions = self.class.get("/transactions.json", :query => options)
+      transactions.map{|t| Hashie::Mash.new t['transaction']}
+    end
   end
 end
