@@ -1,4 +1,9 @@
 # Changelog
+
+## next version
+* Fix #charge_subscription to submit it's body as json [@will](http://github.com/will)
+* API coverage for quantity components [@will](http://github.com/will)
+
 ## 0.2.5 May 24, 2010
 * Require fix from [@will](http://github.com/will)
 
