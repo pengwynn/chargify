@@ -1,0 +1,11 @@
+{
+  "component": {
+    "kind": "quantity_based_component",
+    "name": "Extra Rubies",
+    "allocated_quantity": 42,
+    "subscription_id": 16,
+    "pricing_scheme": "per_unit",
+    "component_id": 84,
+    "unit_name": "band"
+  }
+}

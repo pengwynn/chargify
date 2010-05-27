@@ -86,8 +86,6 @@ module Chargify
       subscriptions.map{|s| Hashie::Mash.new s['subscription']}
     end
     
-    
-    
     def subscription(subscription_id)
       raw_response = get("/subscriptions/#{subscription_id}.json")
       return nil if raw_response.code != 200
@@ -166,6 +164,24 @@ module Chargify
       response.update(:success? => success)
     end
     
+    def list_components(subscription_id)
+      components = get("/subscriptions/#{subscription_id}/components.json")
+      components.map{|c| Hashie::Mash.new c['component']}
+    end
+    
+    def subscription_component(subscription_id, component_id)
+      response = get("/subscriptions/#{subscription_id}/components/#{component_id}.json")
+      Hashie::Mash.new(response).component
+    end
+    
+    def update_subscription_component_allocated_quantity(subscription_id, component_id, quantity)
+      response = put("/subscriptions/#{subscription_id}/components/#{component_id}.json", :body => {:component => {:allocated_quantity => quantity}})
+      response[:success?] = response.code == 200
+      Hashie::Mash.new(response)
+    end
+      
+      
+      
     private
     
     def post(path, options={})
