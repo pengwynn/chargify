@@ -324,6 +324,27 @@ class ChargifyTest < Test::Unit::TestCase
       product.accounting_code.should == 'TSMO'
     end
     
+    context "for quantity based components" do
+      should "list components" do
+        stub_get "https://OU812:x@pengwynn.chargify.com/subscriptions/123/components.json", "components.json"
+        components = @client.list_components(123)
+        components.first.allocated_quantity.should == 42
+        components.last.allocated_quantity.should == 2 
+      end
+      
+      should "show a specific component" do
+        stub_get "https://OU812:x@pengwynn.chargify.com/subscriptions/123/components/16.json", "component.json"
+        component = @client.subscription_component 123, 16
+        component.name.should == "Extra Rubies"
+        component.allocated_quantity.should == 42
+      end
+      
+      should "update the allocated_quantity for a component" do
+        stub_put "https://OU812:x@pengwynn.chargify.com/subscriptions/123/components/16.json", "component.json"
+        response = @client.update_subscription_component_allocated_quantity 123, 16, 20_000_000
+        response.success?.should == true
+      end
+    end
     
   end
 end
