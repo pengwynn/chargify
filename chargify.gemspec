@@ -61,6 +61,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<jnunemaker-matchy>, ["= 0.4.0"])
       s.add_development_dependency(%q<mocha>, ["~> 0.9.8"])
       s.add_development_dependency(%q<fakeweb>, [">= 1.2.5"])
+      s.add_development_dependency(%q<redgreeb>, [">= 1.2.2"])
     else
       s.add_dependency(%q<hashie>, ["~> 0.1.3"])
       s.add_dependency(%q<httparty>, ["~> 0.5.2"])
