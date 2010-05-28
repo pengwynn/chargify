@@ -3,6 +3,7 @@
 ## 0.2.6 May 27, 2010
 * Fix #charge_subscription to submit it's body as json [@will](http://github.com/will) and [@ignat](http://github.com/ignat)
 * API coverage for quantity components [@will](http://github.com/will)
+* API coverage for site and subscription transactions [@ignat](http://github.com/ignat)
 
 ## 0.2.5 May 24, 2010
 * Require fix from [@will](http://github.com/will)

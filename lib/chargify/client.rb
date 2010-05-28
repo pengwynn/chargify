@@ -127,11 +127,7 @@ module Chargify
     end
       
     def charge_subscription(sub_id, subscription_attributes={})
-<<<<<<< HEAD
-      raw_response = self.class.post("/subscriptions/#{sub_id}/charges.json", :body => { :charge => subscription_attributes }.to_json)
-=======
       raw_response = post("/subscriptions/#{sub_id}/charges.json", :body => { :charge => subscription_attributes })
->>>>>>> 7b882dbb5e65d7ddd4b2be6ab6227fc13da6fa61
       success      = raw_response.code == 201
       if raw_response.code == 404
         raw_response = {}
@@ -169,13 +165,14 @@ module Chargify
     end
     
     def subscription_transactions(sub_id, options={})
-      transactions = self.class.get("/subscriptions/#{sub_id}/transactions.json", :query => options)
+      transactions = get("/subscriptions/#{sub_id}/transactions.json", :query => options)
       transactions.map{|t| Hashie::Mash.new t['transaction']}
     end
 
     def site_transactions(options={})
-      transactions = self.class.get("/transactions.json", :query => options)
+      transactions = get("/transactions.json", :query => options)
       transactions.map{|t| Hashie::Mash.new t['transaction']}
+    end
 
     def list_components(subscription_id)
       components = get("/subscriptions/#{subscription_id}/components.json")
@@ -197,29 +194,29 @@ module Chargify
       
     private
     
-    def post(path, options={})
-      jsonify_body!(options)
-      self.class.post(path, options)
-    end
+      def post(path, options={})
+        jsonify_body!(options)
+        self.class.post(path, options)
+      end
     
-    def put(path, options={})
-      jsonify_body!(options)
-      self.class.put(path, options)
-    end
+      def put(path, options={})
+        jsonify_body!(options)
+        self.class.put(path, options)
+      end
     
-    def delete(path, options={})
-      jsonify_body!(options)
-      self.class.delete(path, options)
-    end
+      def delete(path, options={})
+        jsonify_body!(options)
+        self.class.delete(path, options)
+      end
     
-    def get(path, options={})
-      jsonify_body!(options)
-      self.class.get(path, options)
-    end
+      def get(path, options={})
+        jsonify_body!(options)
+        self.class.get(path, options)
+      end
     
-    def jsonify_body!(options)
-      options[:body] = options[:body].to_json if options[:body]
+      def jsonify_body!(options)
+        options[:body] = options[:body].to_json if options[:body]
 
-    end
+      end
   end
 end
