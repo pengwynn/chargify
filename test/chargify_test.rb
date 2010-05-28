@@ -1,7 +1,7 @@
 require 'helper'
 
 class ChargifyTest < Test::Unit::TestCase
-  context "When hitting the Chargify API" do
+  context "Chargify API client" do
     setup do
       @client = Chargify::Client.new('OU812', 'pengwynn')
     end
