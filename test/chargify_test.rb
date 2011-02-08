@@ -345,6 +345,31 @@ class ChargifyTest < Test::Unit::TestCase
         response.success?.should == true
       end
     end
+
+    context "for on/off components" do
+      should "update enabled with a 1 for component on" do
+        @client.expects(:put).
+          with("/subscriptions/123/components/16.json", :body => {:component => {:enabled => 1}}).
+          returns(Hashie::Mash.new(:code => 200)).at_most(3)
+        @client.update_subscription_component_enabled 123, 16, true
+        @client.update_subscription_component_enabled 123, 16, " "
+        @client.update_subscription_component_enabled 123, 16, 21
+      end
+
+      should "update enabled with a 0 for component off" do
+        @client.expects(:put).
+          with("/subscriptions/123/components/16.json", :body => {:component => {:enabled => 0}}).
+          returns(Hashie::Mash.new(:code => 200)).at_most(2)
+        @client.update_subscription_component_enabled 123, 16, false
+        @client.update_subscription_component_enabled 123, 16, nil
+      end
+
+      should "update enabled for a component" do
+        stub_put "https://OU812:x@pengwynn.chargify.com/subscriptions/123/components/16.json", "component.json"
+        response = @client.update_subscription_component_enabled 123, 16, true
+        response.success?.should == true
+      end
+    end
     
   end
 end

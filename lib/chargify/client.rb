@@ -185,12 +185,19 @@ module Chargify
     end
     
     def update_subscription_component_allocated_quantity(subscription_id, component_id, quantity)
-      response = put("/subscriptions/#{subscription_id}/components/#{component_id}.json", :body => {:component => {:allocated_quantity => quantity}})
+      update_subscription_component(subscription_id, component_id, :allocated_quantity => quantity)
+    end
+
+    def update_subscription_component_enabled(subscription_id, component_id, enabled)
+      update_subscription_component(subscription_id, component_id, :enabled => (enabled ? 1 : 0))
+    end
+
+    def update_subscription_component(subscription_id, component_id, component = {})
+      response = put("/subscriptions/#{subscription_id}/components/#{component_id}.json", :body => {:component => component})
       response[:success?] = response.code == 200
       Hashie::Mash.new(response)
-    end
-      
-      
+    end 
+
       
     private
     
