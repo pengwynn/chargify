@@ -189,14 +189,21 @@ module Chargify
     end
 
     def update_subscription_component_enabled(subscription_id, component_id, enabled)
-      update_subscription_component(subscription_id, component_id, :enabled => (enabled ? 1 : 0))
+      update_subscription_component(subscription_id, component_id, :enabled => enabled)
     end
 
     def update_subscription_component(subscription_id, component_id, component = {})
-      response = put("/subscriptions/#{subscription_id}/components/#{component_id}.json", :body => {:component => component})
+      component[:enabled] = (component[:enabled] ? 1 : 0) if component.keys.include?(:enabled)
+      response = put("/subscriptions/#{subscription_id}/components/#{component_id}.json", 
+                    :body => {:component => component})
       response[:success?] = response.code == 200
       Hashie::Mash.new(response)
     end 
+
+    alias update_metered_component  update_subscription_component_allocated_quantity
+    alias update_component_quantity update_subscription_component_allocated_quantity
+    alias update_on_off_component   update_subscription_component_enabled
+    alias update_component          update_subscription_component
 
       
     private

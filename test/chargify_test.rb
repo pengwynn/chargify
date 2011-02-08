@@ -370,6 +370,30 @@ class ChargifyTest < Test::Unit::TestCase
         response.success?.should == true
       end
     end
+
+    context "aliased methods" do
+      setup do
+        stub_put "https://OU812:x@pengwynn.chargify.com/subscriptions/123/components/16.json", "component.json"
+      end
+
+      should "expose #update_component" do
+        @client.update_component 123, 16, :enabled => true
+        @client.update_component 123, 16, :enabled => false
+        @client.update_component 123, 16, :funky   => 'buttlovin'
+      end
+
+      should "expose #update_on_off_component" do
+        @client.update_on_off_component 123, 16, true
+      end
+
+      should "expose #update_component_quantity" do
+        @client.update_component_quantity 123, 16, 20_000
+      end
+
+      should "expose #update_metered_component" do
+        @client.update_metered_component 123, 16, 20_000
+      end
+    end
     
   end
 end
