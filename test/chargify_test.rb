@@ -305,7 +305,14 @@ class ChargifyTest < Test::Unit::TestCase
       subscription.success?.should == true
       subscription.product.id.should == 354
     end
-    
+
+    should "adjust a subscription" do
+      @client.expects(:post).with("/subscriptions/123/adjustments.json", :body => {:adjustment => {}}).
+        returns(Hashie::Mash.new(:adjustment => {}, :code => 201))
+      response = @client.adjust_subscription 123
+      response.success?.should == true
+    end
+
     should "return a list of products" do
       stub_get "https://OU812:x@pengwynn.chargify.com/products.json", "products.json"
       products = @client.list_products

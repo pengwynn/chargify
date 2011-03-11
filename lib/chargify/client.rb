@@ -144,6 +144,14 @@ module Chargify
       (response.subscription || {}).update(:success? => success)
     end
 
+    def adjust_subscription(sub_id, attributes = {})
+      raw_response = post("/subscriptions/#{sub_id}/adjustments.json",
+                          :body => { :adjustment => attributes })
+      created = true if raw_response.code == 201
+      response = Hashie::Mash.new(raw_response)
+      (response.adjustment || response).update(:success? => created)
+    end
+
     def list_products
       products = get("/products.json")
       products.map{|p| Hashie::Mash.new p['product']}
