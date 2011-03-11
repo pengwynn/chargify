@@ -169,6 +169,11 @@ module Chargify
       transactions.map{|t| Hashie::Mash.new t['transaction']}
     end
 
+    def subscription_statements(sub_id, options={})
+      statements = get("/subscriptions/#{sub_id}/statements.json", :query => options)
+      statements.map{|t| Hashie::Mash.new t['statement']}
+    end
+
     def site_transactions(options={})
       transactions = get("/transactions.json", :query => options)
       transactions.map{|t| Hashie::Mash.new t['transaction']}

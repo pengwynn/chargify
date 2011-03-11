@@ -391,6 +391,12 @@ class ChargifyTest < Test::Unit::TestCase
       @client.subscription_transactions 123
     end
 
+    should "return a list of statements" do
+      @client.expects(:get).with("/subscriptions/123/statements.json", :query => {}).
+        returns([{:statement => {}}])
+      @client.subscription_statements 123
+    end
+
     context "aliased methods" do
       setup do
         stub_put "https://OU812:x@pengwynn.chargify.com/subscriptions/123/components/16.json", "component.json"
