@@ -338,6 +338,12 @@ class ChargifyTest < Test::Unit::TestCase
         component.name.should == "Extra Rubies"
         component.allocated_quantity.should == 42
       end
+
+      should "return nil if the component is not found" do
+        stub_get "https://OU812:x@pengwynn.chargify.com/subscriptions/123/components/16.json", "", 404
+        component = @client.subscription_component 123, 16
+        component.should == nil
+      end
       
       should "update the allocated_quantity for a component" do
         stub_put "https://OU812:x@pengwynn.chargify.com/subscriptions/123/components/16.json", "component.json"
@@ -368,6 +374,14 @@ class ChargifyTest < Test::Unit::TestCase
         stub_put "https://OU812:x@pengwynn.chargify.com/subscriptions/123/components/16.json", "component.json"
         response = @client.update_subscription_component_enabled 123, 16, true
         response.success?.should == true
+      end
+
+      context "when there is an error" do
+        should "return :success? => false" do
+          stub_put "https://OU812:x@pengwynn.chargify.com/subscriptions/123/components/16.json", "", 404
+          response = @client.update_subscription_component_enabled 123, 16, true
+          response.success?.should == false
+        end
       end
     end
 
