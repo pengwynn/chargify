@@ -9,5 +9,5 @@ Hash.send :include, Hashie::HashExtensions
 require File.join(directory, 'chargify', 'client')
 
 module Chargify
-  VERSION = "0.2.6".freeze
+  VERSION = "0.3.0".freeze
 end
