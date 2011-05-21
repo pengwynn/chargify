@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.0 May 21, 2011
+* Add api calls: adjust_subscription and subscription_statements
+* Get tests to work on 1.9.2
+* Updated development dependencies
+
 ## 0.2.6 May 27, 2010
 * Fix #charge_subscription to submit it's body as json [@will](http://github.com/will) and [@ignat](http://github.com/ignat)
 * API coverage for quantity components [@will](http://github.com/will)
