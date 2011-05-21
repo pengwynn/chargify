@@ -1,4 +1,4 @@
-require 'helper'
+require 'test/helper'
 
 class ChargifyTest < Test::Unit::TestCase
   context "Chargify API client" do
