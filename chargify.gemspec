@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.test_files = [ "test/helper.rb", "test/chargify_test.rb" ]
 
   s.add_runtime_dependency(%q<hashie>, ["~> 1.2"])
-  s.add_runtime_dependency(%q<httparty>, ["~> 0.7.4"])
+  s.add_runtime_dependency(%q<httparty>, ["~> 0.8"])
   s.add_development_dependency(%q<shoulda>, [">= 2.10.1"])
   s.add_development_dependency(%q<jnunemaker-matchy>, ["= 0.4.0"])
   s.add_development_dependency(%q<mocha>, ["~> 0.9.8"])
